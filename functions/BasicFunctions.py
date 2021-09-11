@@ -12,7 +12,7 @@ class BasicFunctions(BotCore):
 
     @commands.command()
     async def ping(self,ctx):
-        embed=discord.Embed(title="Pong!",description=f'{round(self.bot.latency*1000)} ms', color=0xa7f21c)
+        embed=discord.Embed(title=":ping_pong:Pong!    ",description=f'{round(self.bot.latency*1000)} ms', color=0xa7f21c)
         await ctx.send(embed=embed)
 
 def setup(bot):
