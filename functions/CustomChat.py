@@ -71,8 +71,7 @@ class CustomChat(BotCore):
                     
                     if(len(msg) > 0):
                         await message.reply(choice(msg))
-                else:
-                    await message.reply("you do not add any reply to me")
+                
 
 def update_reply(mode,context,reply,server_id):
     jsonFile = open("reply.json", "r",encoding='utf8') 
