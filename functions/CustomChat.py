@@ -84,9 +84,9 @@ def update_reply(mode,context,reply,server_id):
             "startwith":{},
             "endwith":{}
         }
-    if context not in data[mode].keys():
+    if context not in data[server_id][mode].keys():
         data[server_id][mode][context] = []
-    if reply not in data[mode][context]:
+    if reply not in data[server_id][mode][context]:
         data[server_id][mode][context].append(reply)
 
     jsonFile = open("reply.json", "w+",encoding='utf8')
