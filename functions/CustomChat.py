@@ -50,7 +50,7 @@ class CustomChat(BotCore):
                 with open('reply.json','r',encoding='utf8') as file:
                     reply = json.load(file)
                     
-                if message.guild.id in reply.keys():
+                if message.guild.id not in reply.keys():
                     msg = [] 
                     for i in reply[message.guild.id]["contain"].keys():
                         if i.lower() in message.content.lower():
