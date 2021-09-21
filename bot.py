@@ -5,7 +5,6 @@ import json
 
 import os
 
-import keepalive
 
 with open('setting.json','r',encoding='utf8') as file:
     setting = json.load(file)
@@ -18,5 +17,4 @@ for file in os.listdir('./functions'):
         bot.load_extension(f'functions.{file[:-3]}')
 
 if __name__ == '__main__':  
-    keepalive.keep_alive()
     bot.run(setting["token"])
