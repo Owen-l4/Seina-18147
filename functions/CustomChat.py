@@ -17,14 +17,14 @@ class CustomChat(BotCore):
         brief="add reply message when message contain the context"
     )
     async def contain(self,ctx,context,reply_message):
-        embed = update_reply("contain",context,reply_message)
+        embed = update_reply("contain",context,reply_message,ctx.message.guild.id)
         await ctx.send(embed=embed)
     @define_message.command(
         help="add reply message when message equal the context",
         brief="add reply message when message equal the context"
     )
     async def equal(self,ctx,context,reply_message):
-        embed = update_reply("equal",context,reply_message)
+        embed = update_reply("equal",context,reply_message,ctx.message.guild.id)
         await ctx.send(embed=embed)
 
     @define_message.command(
@@ -32,7 +32,7 @@ class CustomChat(BotCore):
         brief="add reply message when message startwith the context"
     )
     async def startwith(self,ctx,context,reply_message):
-        embed = update_reply("startwith",context,reply_message)
+        embed = update_reply("startwith",context,reply_message,ctx.message.guild.id)
         await ctx.send(embed=embed)
 
     @define_message.command(
@@ -40,7 +40,7 @@ class CustomChat(BotCore):
         brief="add reply message when message endwith the context"
     )
     async def endwith(self,ctx,context,reply_message):
-        embed = update_reply("endwith",context,reply_message)
+        embed = update_reply("endwith",context,reply_message,ctx.message.guild.id)
         await ctx.send(embed=embed)
 
     @commands.Cog.listener()
@@ -50,35 +50,44 @@ class CustomChat(BotCore):
                 with open('reply.json','r',encoding='utf8') as file:
                     reply = json.load(file)
                     
-                msg = [] 
-                for i in reply["contain"].keys():
-                    if i.lower() in message.content.lower():
-                        msg += reply["contain"][i]
+                if message.guild.id in reply.keys():
+                    msg = [] 
+                    for i in reply[message.guild.id]["contain"].keys():
+                        if i.lower() in message.content.lower():
+                            msg += reply[message.guild.id]["contain"][i]
+                    
+                    for i in reply[message.guild.id]["equal"].keys():
+                        if i.lower() == message.content.lower():
+                            msg += reply[message.guild.id]["equal"][i]
+                    
+                    for i in reply[message.guild.id]["startwith"]:
+                        if message.content.lower().startswith(i.lower()):
+                            msg += reply[message.guild.id]["startwith"][i]
+                    
+                    for i in reply[message.guild.id]["endwith"]:
+                        if message.content.lower().endswith(i.lower()):
+                            msg += reply[message.guild.id]["endwith"][i]
+                    
+                    if(len(msg) > 0):
+                        await message.reply(choice(msg))
                 
-                for i in reply["equal"].keys():
-                    if i.lower() == message.content.lower():
-                        msg += reply["equal"][i]
-                
-                for i in reply["startwith"]:
-                    if message.content.lower().startswith(i.lower()):
-                        msg += reply["startwith"][i]
-                
-                for i in reply["endwith"]:
-                    if message.content.lower().endswith(i.lower()):
-                        msg += reply["endwith"][i]
-                
-                if(len(msg) > 0):
-                    await message.reply(choice(msg))
 
-def update_reply(mode,context,reply):
+def update_reply(mode,context,reply,server_id):
     jsonFile = open("reply.json", "r",encoding='utf8') 
     data = json.load(jsonFile)
-    jsonFile.close() 
+    jsonFile.close()
 
+    if server_id not in data.keys():
+        data[server_id] = {
+            "contain":{},
+            "equal":{},
+            "startwith":{},
+            "endwith":{}
+        }
     if context not in data[mode].keys():
-        data[mode][context] = []
+        data[server_id][mode][context] = []
     if reply not in data[mode][context]:
-        data[mode][context].append(reply)
+        data[server_id][mode][context].append(reply)
 
     jsonFile = open("reply.json", "w+",encoding='utf8')
     json.dump(data,jsonFile, indent=4,ensure_ascii=False)
