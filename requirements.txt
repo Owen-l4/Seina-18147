@@ -1,3 +1,4 @@
 discord
 requests
 Pillow
+discord-together
