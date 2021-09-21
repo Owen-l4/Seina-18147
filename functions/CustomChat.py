@@ -49,24 +49,25 @@ class CustomChat(BotCore):
             if not message.content.startswith("http"):
                 with open('reply.json','r',encoding='utf8') as file:
                     reply = json.load(file)
-                    
-                if message.guild.id not in reply.keys():
+
+                server_id = str(message.guild.id)
+                if server_id in reply.keys():
                     msg = [] 
-                    for i in reply[message.guild.id]["contain"].keys():
+                    for i in reply[server_id]["contain"].keys():
                         if i.lower() in message.content.lower():
-                            msg += reply[message.guild.id]["contain"][i]
+                            msg += reply[server_id]["contain"][i]
                     
-                    for i in reply[message.guild.id]["equal"].keys():
+                    for i in reply[server_id]["equal"].keys():
                         if i.lower() == message.content.lower():
-                            msg += reply[message.guild.id]["equal"][i]
+                            msg += reply[server_id]["equal"][i]
                     
-                    for i in reply[message.guild.id]["startwith"]:
+                    for i in reply[server_id]["startwith"]:
                         if message.content.lower().startswith(i.lower()):
-                            msg += reply[message.guild.id]["startwith"][i]
+                            msg += reply[server_id]["startwith"][i]
                     
-                    for i in reply[message.guild.id]["endwith"]:
+                    for i in reply[server_id]["endwith"]:
                         if message.content.lower().endswith(i.lower()):
-                            msg += reply[message.guild.id]["endwith"][i]
+                            msg += reply[server_id]["endwith"][i]
                     
                     if(len(msg) > 0):
                         await message.reply(choice(msg))
