@@ -1,5 +1,6 @@
 import discord
 from discord.ext import commands
+from grpc import server
 
 from BotCore import BotCore
 
@@ -78,16 +79,17 @@ def update_reply(mode,context,reply,server_id):
     data = json.load(jsonFile)
     jsonFile.close()
 
-    if server_id not in data.keys():
+    server_id = str(server_id)
+    if not (server_id in data.keys()):
         data[server_id] = {
             "contain":{},
             "equal":{},
             "startwith":{},
             "endwith":{}
         }
-    if context not in data[server_id][mode].keys():
+    if not (context in data[server_id][mode].keys()):
         data[server_id][mode][context] = []
-    if reply not in data[server_id][mode][context]:
+    if not (reply in data[server_id][mode][context]):
         data[server_id][mode][context].append(reply)
 
     jsonFile = open("reply.json", "w+",encoding='utf8')
